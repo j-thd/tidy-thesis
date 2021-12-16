@@ -6,32 +6,24 @@ from matplotlib import pyplot as plt
 import timeit # To time speed of optmization
 
 import optimization
-import optimization.Settings_Cen
-#import optimization.settings_SA_DIV30
 #import optimization.settings
-#import optimization.settings_SA_w_channel_10
-#import optimization.settings_SA_AR_5
-#import optimization.settings_SA_w_channel_spacing_25
-
 F = 7.71e-3
 T = 557.80
 str_f= "optimization-results-Cen-2/"
 
 
-def run(F_desired=F, T_chamber= T, str_folder= str_f): # Default values in case it is run as main
+def run(F_desired, T_chamber, str_folder, channels_min, channels_max, settings): # Default values in case it is run as main
 
     # if len(sys.argv)>1:
     #     F_desired = float(sys.argv[1])*1e-3  # [N] Thrust is passed as micronewtons
     #     T_chamber = int(sys.argv[2]) # [K] Chamber temperature
 
-    str_save_file = str_folder + "optimization_results-F{:1.0f}mN-{:3.0f}K".format(F_desired*1e3, T_chamber)
+    str_save_file = str_folder + "optimization_results-F{:3.5f}mN-{:4.5f}K".format(F_desired*1e3, T_chamber)
     save_file = open(str_save_file+ ".npz", "wb")
     #save_file_companion = open(str_save_file+ ".pkl", "wb")
 
     # Load all settings
-    channel_amount_range = np.arange(9,10)
-    #full_results = [] # List storing full results
-    #full_prepared_values = [] # List storing full prepared values
+    channel_amount_range = np.arange(channels_min,channels_max)
     P_total = np.zeros(len(channel_amount_range))
     P_loss = np.zeros_like(P_total)
     P_ideal = np.zeros_like(P_total)
@@ -74,8 +66,6 @@ def run(F_desired=F, T_chamber= T, str_folder= str_f): # Default values in case 
 
     i_channel = np.nditer(channel_amount_range, flags=['c_index'])
     for i in i_channel:
-        
-        settings = optimization.Settings_Cen.settings_1D_rectangular_multichannel
         
         results = optimization.run(
             F_desired=F_desired,
@@ -135,10 +125,6 @@ def run(F_desired=F, T_chamber= T, str_folder= str_f): # Default values in case 
     stop = timeit.default_timer()
     print("Time elapsed: {} seconds".format(stop-start))
     
-    # Save full-results and full prepared values
-    #full_dict = {'res': full_results, 'prepared_values': full_prepared_values}
-    #pickle.dump(full_dict, save_file_companion)
-    #save_file_companion.close()
     
     # Save overall results
     np.savez(save_file,
@@ -181,55 +167,3 @@ def run(F_desired=F, T_chamber= T, str_folder= str_f): # Default values in case 
         Re_throat_new=Re_throat_new
     )
     save_file.close()
-
-    # plt.figure()
-    # plt.plot(channel_amount_range, P_total)
-    # plt.title("Total power consumption")
-    # plt.grid()
-
-    # plt.figure()
-    # plt.plot(channel_amount_range, pressure_drop*1e-5)
-    # plt.title("pressure_drop")
-    # plt.grid()
-
-    # plt.figure()
-    # plt.plot(channel_amount_range, T_wall_bottom)
-    # plt.title("Bottom wall temperature")
-    # plt.grid()
-
-    # plt.figure()
-    # plt.plot(channel_amount_range, T_wall)
-    # plt.title("Top wall temperature")
-    # plt.grid()
-
-    # plt.figure()
-    # plt.plot(channel_amount_range, w_channel*1e6)
-    # plt.title("Channel width")
-    # plt.grid()
-
-    # plt.figure()
-    # plt.plot(channel_amount_range, l_channel*1e3)
-    # plt.title("Channel length")
-    # plt.grid()
-
-    # plt.figure()
-    # plt.plot(channel_amount_range, w_channel_spacing*1e6)
-    # plt.title("Channel spacing")
-    # plt.grid()
-    
-
-    # plt.figure()
-    # plt.plot(channel_amount_range, M_channel_exit_after_dP)
-    # plt.title("Mach")
-    # plt.grid()
- 
-
-    # plt.figure()
-    # plt.plot(channel_amount_range, Re_channel_exit_after_dP)
-    # plt.title("Reynolds")
-    # plt.grid()
-
-    # plt.show()
-
-if __name__ == "__main__":
-    run()

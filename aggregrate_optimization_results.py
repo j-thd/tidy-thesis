@@ -2,37 +2,15 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-SA_string_wc_10_micron = "\n(Sensitivity analysis on channel width:  $w_c \\geq 10 \\mu$m)"
-SA_string = ""#SA_string_wc_10_micron
+SA_string = ""
 
-def run():
-    # Strings to point towards results for different thrust levels
-    # str_1mN_folder = "optimization_results_SA_w_channel_spacing_25/optimization_results-1mN/"
-    # str_2mN_folder = "optimization_results_SA_w_channel_spacing_25/optimization_results-2mN/"
-    # str_3mN_folder = "optimization_results_SA_w_channel_spacing_25/optimization_results-3mN/"
-    # str_4mN_folder = "optimization_results_SA_w_channel_spacing_25/optimization_results-4mN/"
-    # str_5mN_folder = "optimization_results_SA_w_channel_spacing_25/optimization_results-5mN/"
-    str_1mN_folder = "optimization_results_SA_DIV30/optimization_results-1mN/"
-    str_2mN_folder = "optimization_results_SA_DIV30/optimization_results-2mN/"
-    str_3mN_folder = "optimization_results_SA_DIV30/optimization_results-3mN/"
-    str_4mN_folder = "optimization_results_SA_DIV30/optimization_results-4mN/"
-    str_5mN_folder = "optimization_results_SA_DIV30/optimization_results-5mN/"
-    # str_1mN_folder = "optimization_results-1mN/"
-    # str_2mN_folder = "optimization_results-2mN/"
-    # str_3mN_folder = "optimization_results-3mN/"
-    # str_4mN_folder = "optimization_results-4mN/"
-    # str_5mN_folder = "optimization_results-5mN/"
+def plot_results(str_folder):
     # Load data for different thrust levels
-    d1 = load_data_in_folder(str_1mN_folder)
-    d2 = load_data_in_folder(str_2mN_folder)
-    d3 = load_data_in_folder(str_3mN_folder)
-    d4 = load_data_in_folder(str_4mN_folder)
-    d5 = load_data_in_folder(str_5mN_folder)
+    d1 = load_data_in_folder(str_folder)
     # Make into a data list, to iterate over when plotting results
-    dl = [d1, d2, d3, d4, d5]
-
+    dl = [d1]
     # Some plots to highlight lose results for one thrust level
-    dh=d2
+    dh=d1
     plotIspVsPower(dh)
     plotOptimalDesign(dh)
     plotThroatPressureResults(dh)
@@ -362,10 +340,6 @@ def plotThroatPressureResults(data):
     axs[1][1].set_ylabel("Total chip length - $l_c$ [mm]")
     axs[1][1].set_xlabel("Specific Impulse - $I_{{sp}}$ [s]")
     axs[1][1].grid()
-    fig.suptitle("???????? for {:2.1f} mN for given $I_{{sp}}$".format(data['F_desired'][0]*1e3))
+    fig.suptitle("Resulting geometry for {:2.1f} mN for given $I_{{sp}}$".format(data['F_desired'][0]*1e3))
     #axs[0][0].legend()
     plt.tight_layout(pad=0.5)
-
-
-if __name__ == "__main__":
-    run()
